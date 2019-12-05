@@ -1860,6 +1860,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1910,6 +1914,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1927,6 +1950,18 @@ __webpack_require__.r(__webpack_exports__);
     EventBus.$on('status-created', function (status) {
       _this.statuses.unshift(status);
     });
+  },
+  methods: {
+    like: function like(status) {
+      axios.post("/statuses/".concat(status.id, "/likes")).then(function (res) {
+        status.is_liked = true;
+      });
+    },
+    unlike: function unlike(status) {
+      axios["delete"]("/statuses/".concat(status.id, "/likes")).then(function (res) {
+        status.is_liked = false;
+      });
+    }
   }
 });
 
@@ -37382,7 +37417,10 @@ var staticRenderFns = [
       _c(
         "button",
         { staticClass: "btn btn-primary", attrs: { id: "create-status" } },
-        [_vm._v("Publicar")]
+        [
+          _c("i", { staticClass: "fa fa-paper-plane mr-1" }),
+          _vm._v("\n                    Publicar\n            ")
+        ]
       )
     ])
   }
@@ -37444,6 +37482,39 @@ var render = function() {
               staticClass: "card-text text-secondary",
               domProps: { textContent: _vm._s(status.body) }
             })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-footer p-2" }, [
+            status.is_liked
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-link btn-sm",
+                    attrs: { dusk: "unlike-btn" },
+                    on: {
+                      click: function($event) {
+                        return _vm.unlike(status)
+                      }
+                    }
+                  },
+                  [_vm._m(0, true)]
+                )
+              : _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-link btn-sm",
+                    attrs: { dusk: "like-btn" },
+                    on: {
+                      click: function($event) {
+                        return _vm.like(status)
+                      }
+                    }
+                  },
+                  [
+                    _c("i", { staticClass: "far fa-thumbs-up mr-1" }),
+                    _vm._v("\n                    ME GUSTA\n            ")
+                  ]
+                )
           ])
         ]
       )
@@ -37451,7 +37522,17 @@ var render = function() {
     0
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("strong", [
+      _c("i", { staticClass: "fa fa-thumbs-up text-primary mr-1" }),
+      _vm._v("\n                        TE GUSTA\n                    ")
+    ])
+  }
+]
 render._withStripped = true
 
 

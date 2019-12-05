@@ -6,13 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}"><meta>
     <meta name="user" content="{{ Auth::user() }}"><meta>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     <title>Social App</title>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light navbar-laravel">
         <div class="container">
-            <a class="navbar-brand" href="{{ route('login')}}">SocialApp</a>
+            <a class="navbar-brand" href="{{ route('login')}}">
+                <i class="fa fa-address-book text-primary mr-1"></i>
+                SocialApp
+            </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
