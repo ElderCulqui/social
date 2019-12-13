@@ -25,13 +25,33 @@ class UsersCanLikeStatusesTest extends DuskTestCase
             $browser->loginAs($user)
                     ->visit('/')
                     ->waitForText($status->body)
+                    ->assertSeeIn('@likes-count', 0)
                     ->press('@like-btn')
                     ->waitForText('TE GUSTA')
                     ->assertSee('TE GUSTA')
+                    ->assertSeeIn('@likes-count', 1)
                     
                     ->press('@unlike-btn')
                     ->waitForText('ME GUSTA')
                     ->assertSee('ME GUSTA')
+                    ;
+        });
+    }
+    /**
+     * A Dusk test example.
+     * @test
+     * @throws \Throwable
+     */
+    public function guest_users_cannot_like_statuses()
+    {
+        $status = factory(Status::class)->create(['created_at' => now()->subHour()]);
+        
+        $this->browse(function (Browser $browser) use ($status) {
+            $browser->visit('/')
+                    ->waitForText($status->body)
+                    ->press('@like-btn')
+                    // ->waitForLocation('/login')
+                    // ->assertPathIs('/login')
                     ;
         });
     }

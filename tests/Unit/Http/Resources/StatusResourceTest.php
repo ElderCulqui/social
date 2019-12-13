@@ -50,5 +50,10 @@ class StatusResourceTest extends TestCase
             false,
             $statusResource['is_liked']
         );
+        
+        $this->assertEquals(
+            false,
+            $statusResource['likes_count']
+        );
     }
 }
