@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Status;
 use App\Models\Like;
+use App\Models\Comment;
 use App\User;
 
 class StatusTest extends TestCase
@@ -22,6 +23,16 @@ class StatusTest extends TestCase
         $this->assertInstanceOf(User::class, $status->user);
     }
 
+    /** @test */
+    public function a_status_has_many_comments()
+    {
+        $status = factory(Status::class)->create();
+
+        factory(Comment::class)->create(['status_id' => $status->id]);
+
+        $this->assertInstanceOf(Comment::class, $status->comments->first());
+    }
+    
     /** @test */
     public function a_status_has_many_likes()
     {

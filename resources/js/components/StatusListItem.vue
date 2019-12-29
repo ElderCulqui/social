@@ -19,6 +19,16 @@
                     <i class="far fa-thumbs-up"></i>
                     <span dusk="likes-count">{{ status.likes_count}}</span>
                 </div>
+
+                <form @submit.prevent="addComment">
+                    <textarea name="comment" v-model="newComment"></textarea>
+                    <button dusk="comment-btn">Enviar</button>
+                </form>
+
+                <div v-for="comment in comments" :key=comment.id>
+                    {{ comment.user_name }}
+                    {{ comment.body }}
+                </div>
             </div>
         </div>
     </div>
@@ -32,9 +42,24 @@ export default {
             type: Object,
             required: true
         },
+    },
+    components: { LikeBtn },
+    data() {
+        return {
+            newComment: '',
+            comments: this.status.comments
+        }
+    },
+    methods: {
+        addComment(){
+            axios.post(`/statuses/${this.status.id}/comments`, {body: this.newComment})
+                    .then(res => {
+                        this.newComment = '';
+                        this.comments.push(res.data.data);
+                    })
+        }
+    },
 
-        components: { LikeBtn }
-    }
 }
 </script>
 

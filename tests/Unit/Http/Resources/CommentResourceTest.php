@@ -24,5 +24,15 @@ class CommentResourceTest extends TestCase
             $comment->body, 
             $commentResource['body']
         );
+        
+        $this->assertEquals(
+            $comment->user->name, 
+            $commentResource['user_name']
+        );
+        
+        $this->assertEquals(
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT8wsXoAeQVQpY2jv1uekQY5FOffdqL_stDYTYfBkmV1Q4zuN0I',
+            $commentResource['user_avatar']
+        );
     }
 }

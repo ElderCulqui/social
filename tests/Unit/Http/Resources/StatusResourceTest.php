@@ -7,7 +7,9 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Status;
+use App\Models\Comment;
 use App\Http\Resources\StatusResource;
+use App\Http\Resources\CommentResource;
 
 class StatusResourceTest extends TestCase
 {
@@ -17,6 +19,8 @@ class StatusResourceTest extends TestCase
     public function a_status_resources_must_have_the_necessary_fields()
     {
         $status = factory(Status::class)->create();
+
+        factory(Comment::class)->create(['status_id' => $status->id]);
 
         $statusResource = StatusResource::make($status)->resolve();
 
@@ -54,6 +58,18 @@ class StatusResourceTest extends TestCase
         $this->assertEquals(
             false,
             $statusResource['likes_count']
+        );
+        
+        // dd($statusResource['comments']->first()->resource);
+
+        $this->assertEquals(
+            CommentResource::class,
+            $statusResource['comments']->collects
+        );
+
+        $this->assertInstanceOf(
+            Comment::class,
+            $statusResource['comments']->first()->resource
         );
     }
 }

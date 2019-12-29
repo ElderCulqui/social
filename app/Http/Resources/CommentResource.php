@@ -15,7 +15,9 @@ class CommentResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'body' => $this->body
+            'body' => $this->body,
+            'user_name' => $this->user->name,
+            'user_avatar' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT8wsXoAeQVQpY2jv1uekQY5FOffdqL_stDYTYfBkmV1Q4zuN0I',
         ];
     }
 }
