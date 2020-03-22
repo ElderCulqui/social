@@ -7,6 +7,8 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\User;
 use App\Models\Comment;
+use App\Models\Like;
+use App\Traits\HasLikes;
 
 class CommentTest extends TestCase
 {
@@ -19,4 +21,11 @@ class CommentTest extends TestCase
 
         $this->assertInstanceOf(User::class, $comment->user);
     }
+
+    /** @test */
+    public function a_comment_model_must_use_the_trait_has_likes()
+    {
+        $this->assertClassUsesTrait(HasLikes::class, Comment::class);
+    }
+    
 }
