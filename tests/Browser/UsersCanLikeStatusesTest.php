@@ -11,6 +11,27 @@ use App\Models\Status;
 class UsersCanLikeStatusesTest extends DuskTestCase
 {
     use DatabaseMigrations;
+
+    /**
+     * A Dusk test example.
+     * @test
+     * @throws \Throwable
+     */
+    public function guest_users_cannot_like_statuses()
+    {
+        $status = factory(Status::class)->create(['created_at' => now()->subHour()]);
+        
+        $this->browse(function (Browser $browser) use ($status) {
+            $browser->visit('/')
+                    ->waitForText($status->body)
+                    ->waitFor('@like-btn')
+                    ->press('@like-btn')
+                    ->waitForLocation('/login')
+                    ->assertPathIs('/login')
+                    ;
+        });
+    }
+
     /**
      * A Dusk test example.
      * @test
@@ -31,29 +52,12 @@ class UsersCanLikeStatusesTest extends DuskTestCase
                     ->assertSee('TE GUSTA')
                     ->assertSeeIn('@likes-count', 1)
                     
-                    ->press('@unlike-btn')
+                    ->press('@like-btn')
                     ->waitForText('ME GUSTA')
                     ->assertSee('ME GUSTA')
                     ->assertSeeIn('@likes-count', 0)
                     ;
         });
     }
-    /**
-     * A Dusk test example.
-     * @test
-     * @throws \Throwable
-     */
-    public function guest_users_cannot_like_statuses()
-    {
-        $status = factory(Status::class)->create(['created_at' => now()->subHour()]);
-        
-        $this->browse(function (Browser $browser) use ($status) {
-            $browser->visit('/')
-                    ->waitForText($status->body)
-                    ->press('@like-btn')
-                    // ->waitForLocation('/login')
-                    // ->assertPathIs('/login')
-                    ;
-        });
-    }
+    
 }
