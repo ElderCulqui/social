@@ -2,14 +2,17 @@
 
 namespace Tests\Unit\Http\Resources;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use App\Models\Status;
-use App\Models\Comment;
-use App\Http\Resources\StatusResource;
+
 use App\Http\Resources\CommentResource;
+use App\Http\Resources\StatusResource;
+use App\Http\Resources\UserResource;
+use App\Models\Comment;
+use App\Models\Status;
+use App\User;
 
 class StatusResourceTest extends TestCase
 {
@@ -33,16 +36,6 @@ class StatusResourceTest extends TestCase
         $this->assertEquals(
             $status->body, 
             $statusResource['body']
-        );
-        
-        $this->assertEquals(
-            $status->user->name, 
-            $statusResource['user_name']
-        );
-
-        $this->assertEquals(
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT8wsXoAeQVQpY2jv1uekQY5FOffdqL_stDYTYfBkmV1Q4zuN0I', 
-            $statusResource['user_avatar']
         );
 
         $this->assertEquals(
@@ -70,6 +63,17 @@ class StatusResourceTest extends TestCase
         $this->assertInstanceOf(
             Comment::class,
             $statusResource['comments']->first()->resource
+        );
+
+        // dd($statusResource['user']);
+        $this->assertInstanceOf(
+            UserResource::class,
+            $statusResource['user']
+        );
+
+        $this->assertInstanceOf(
+            User::class,
+            $statusResource['user']->resource
         );
     }
 }

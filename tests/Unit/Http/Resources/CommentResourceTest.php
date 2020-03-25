@@ -6,12 +6,15 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use App\Models\Status;
+
 use App\Http\Resources\CommentResource;
+use App\Http\Resources\UserResource;
+use App\Models\Status;
+use App\User;
 
 class CommentResourceTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabase;
 
     /** @test */
     public function a_comment_resources_must_have_the_necessary_fields()
@@ -31,16 +34,6 @@ class CommentResourceTest extends TestCase
         );
         
         $this->assertEquals(
-            $comment->user->name, 
-            $commentResource['user_name']
-        );
-        
-        $this->assertEquals(
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT8wsXoAeQVQpY2jv1uekQY5FOffdqL_stDYTYfBkmV1Q4zuN0I',
-            $commentResource['user_avatar']
-        );
-
-        $this->assertEquals(
             0, 
             $commentResource['likes_count']
         );
@@ -48,6 +41,16 @@ class CommentResourceTest extends TestCase
         $this->assertEquals(
             false, 
             $commentResource['is_liked']
+        );
+
+        $this->assertInstanceOf(
+            UserResource::class,
+            $commentResource['user']
+        );
+
+        $this->assertInstanceOf(
+            User::class,
+            $commentResource['user']->resource
         );
     }
 }
