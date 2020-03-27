@@ -6,7 +6,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+
 use App\Models\Status;
+use App\User;
 
 class ListStatusesTest extends TestCase
 {
@@ -38,6 +40,35 @@ class ListStatusesTest extends TestCase
 
         $this->assertEquals(
             $status4->body,
+            $response->json('data.0.body')
+        );
+    }
+
+    /** @test */
+    public function can_get_statuses_for_a_specific_user()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = factory(User::class)->create();
+
+        $status1 = factory(Status::class)->create(['user_id' => $user->id, 'created_at' => now()->subDay()]);
+        $status2 = factory(Status::class)->create(['user_id' => $user->id]);
+
+        $otherStatuses = factory(User::class, 2)->create();
+
+        $response = $this->actingAs($user)
+            ->getJson(route('users.statuses.index', $user));
+
+        $response->assertJson([
+            'meta' => ['total' => 2],
+        ]);
+
+        $response->assertJsonStructure([
+            'data', 'links' => ['prev','next']
+        ]);
+
+        $this->assertEquals(
+            $status2->body,
             $response->json('data.0.body')
         );
     }

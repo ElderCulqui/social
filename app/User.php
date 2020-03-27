@@ -6,6 +6,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use App\Models\Status;
+
 class User extends Authenticatable
 {
     use Notifiable;
@@ -25,6 +27,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected $appends = ['avatar'];
 
     /**
      * The attributes that should be cast to native types.
@@ -48,5 +52,15 @@ class User extends Authenticatable
     public function avatar()
     {
         return 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT8wsXoAeQVQpY2jv1uekQY5FOffdqL_stDYTYfBkmV1Q4zuN0I';
+    }
+
+    public function getAvatarAttribute()
+    {
+        return $this->avatar();
+    }
+
+    public function statuses()
+    {
+        return $this->hasMany(Status::class);   
     }
 }

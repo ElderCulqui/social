@@ -36,7 +36,7 @@
                             <input class="form-control border-0" type="password" name="password_confirmation" placeholder="Tu confirmacion de contraseña...">
                         </div>
         
-                        <button class="btn btn-primary btn-block" id="register-btn" dusk="register-btn">Login</button>
+                        <button class="btn btn-primary btn-block" id="register-btn" dusk="register-btn">Registrar</button>
     
                     </div>
                 </form>

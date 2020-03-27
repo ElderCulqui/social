@@ -53,7 +53,7 @@
                 <form @submit.prevent="addComment" v-if="isAuthenticated">
                     <div class="d-flex align-items-center">
                         <img class="rounded shadow-sm mr-2" width="34px" height="30px"
-                            :src="status.user.avatar" 
+                            :src="currentUser.avatar" 
                             :alt="currentUser.name">
                         
                         <div class="input-group">

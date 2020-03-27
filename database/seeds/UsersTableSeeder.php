@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
+
+use App\Models\Status;
 use App\User;
 
 class UsersTableSeeder extends Seeder
@@ -13,7 +15,12 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         User::truncate();
+        Status::truncate();
 
-        factory(User::class)->create(['email' => 'elder@email.com']);
+        factory(User::class)->create([
+            'name' => 'elder',
+            'email' => 'elder@email.com'
+            ]);
+        factory(Status::class, 10)->create();
     }
 }
