@@ -1,8 +1,6 @@
 <template>
-    <button 
-        @click="sendFriendshipRequest()"
-        dusk="request-friendship">
-        {{ textBtn }}
+    <button @click="toggleFriendshipStatus()">
+        {{ getText }}
     </button>
 </template>
 
@@ -12,24 +10,53 @@
             recipient: {
                 type: Object,
                 require: true
-            }
+            },
+
+            friendshipStatus: {
+                type: String,
+                required: true
+            },
         },
 
         data(){
             return {
-                textBtn : 'Enviar solicitud de amistad'
+                localFriendshipStatus: this.friendshipStatus
             }
         },
 
         methods: {
-            sendFriendshipRequest(){
-                axios.post(`friendships/${this.recipient.name}`)
+            toggleFriendshipStatus(){
+                let method = this.getMethod();
+
+                axios[method](`friendships/${this.recipient.name}`)
                     .then(res => {
-                        this.textBtn = 'Solicitud enviada';
+                        this.localFriendshipStatus = res.data.friendship_status;
                     })
                     .catch(err => {
                         console.log(err.response.data);      
                     })
+            },
+
+            getMethod(){
+                if (this.localFriendshipStatus === 'pending' || this.localFriendshipStatus === 'accepted' ) {
+                    return 'delete';
+                }
+                return 'post';
+            }
+        },
+
+        computed: {
+            getText() {
+                if (this.localFriendshipStatus === 'pending') {
+                    return 'Cancelar solicitud';
+                }
+                if (this.localFriendshipStatus === 'accepted') {
+                    return 'Eliminar de mis amigos';
+                }
+                if (this.localFriendshipStatus === 'denied') {
+                    return 'Solicitud denegada';
+                }
+                return 'Solicitar amistad';
             }
         }
     }
