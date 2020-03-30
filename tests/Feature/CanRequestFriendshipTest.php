@@ -49,6 +49,19 @@ class CanRequestFriendshipTest extends TestCase
     }
 
     /** @test */
+    public function a_user_cannot_send_friend_request_to_itself()
+    {
+        $sender = factory(User::class)->create();
+
+        $this->actingAs($sender)->postJson(route('friendships.store', $sender));
+
+        $this->assertDatabaseMissing('friendships', [
+            'sender_id' => $sender->id,
+            'recipient_id' => $sender->id,
+            'status' => 'pending',
+        ]);
+    }
+    /** @test */
     public function senders_can_delete_sent_friendship_request()
     {
         $this->withoutExceptionHandling();
@@ -73,6 +86,32 @@ class CanRequestFriendshipTest extends TestCase
         ]);
     }
 
+    /** @test */
+    public function recipients_can_delete_denied_friendship_request()
+    {
+        $this->withoutExceptionHandling();
+
+        $sender = factory(User::class)->create();
+        $recipient = factory(User::class)->create();
+
+        Friendship::create([
+            'sender_id' => $sender->id,
+            'recipient_id' => $recipient->id,
+            'status' => 'denied'
+        ]);
+
+        $response = $this->actingAs($recipient)->deleteJson(route('friendships.destroy', $sender));
+
+        $response->assertJson([
+            'friendship_status' => 'deleted'
+        ]);
+
+        $this->assertDatabaseMissing('friendships', [
+            'sender_id' => $sender->id,
+            'recipient_id' => $recipient->id,
+            'status' => 'denied',
+        ]);
+    }
     /** @test */
     public function senders_cannot_delete_denied_friendship_request()
     {
@@ -167,9 +206,11 @@ class CanRequestFriendshipTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        $response = $this->postJson(route('accept-friendships.store', $user));
-
-        $response->assertStatus(401);
+        $this->postJson(route('accept-friendships.store', $user))
+            ->assertStatus(401);
+        
+        $this->get(route('accept-friendships.index'))
+            ->assertRedirect('/login');
     }
     
     /** @test */
