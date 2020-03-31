@@ -1,11 +1,13 @@
 <template>
     <div>
         <div @click="redirectIfGuest">
-            <status-list-item 
-                v-for="status in statuses" 
-                :key="status.id" 
-                :status="status"
-            ></status-list-item>
+            <transition-group name="status-list-transition">
+                <status-list-item 
+                    v-for="status in statuses" 
+                    :key="status.id" 
+                    :status="status"
+                ></status-list-item>
+            </transition-group>
             
         </div>
     </div>
@@ -38,6 +40,10 @@ export default {
         EventBus.$on('status-created', status => {
             this.statuses.unshift(status);
         })
+
+        Echo.channel('statuses').listen('StatusCreated', ({status}) => {
+            this.statuses.unshift(status);
+        })
     },
 
     computed: {
@@ -48,6 +54,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+    .status-list-transition-move{
+        transition : all .8s;
+    }
 </style>
