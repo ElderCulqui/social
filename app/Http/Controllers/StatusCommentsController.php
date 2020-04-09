@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Resources\CommentResource;
+use App\Events\CommentCreated;
 use App\Models\Comment;
 use App\Models\Status;
-use App\Http\Resources\CommentResource;
 
 class StatusCommentsController extends Controller
 {
@@ -21,6 +21,10 @@ class StatusCommentsController extends Controller
                 'body' => request('body')
         ]);
 
-        return CommentResource::make($comment);
+        $commentResource = CommentResource::make($comment);
+
+        CommentCreated::dispatch($commentResource);
+
+        return CommentResource::make($commentResource);
     }
 }

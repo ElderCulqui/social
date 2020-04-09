@@ -47,9 +47,10 @@ class UsersCanRequestFriendshipTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($recipient) {
             $browser->visit(route('users.show', $recipient))
+                    ->waitFor('@request-friendship')
                     ->press('@request-friendship')
                     ->assertPathIs('/login')
-                    ;
+                    ;   
         });
     }
     

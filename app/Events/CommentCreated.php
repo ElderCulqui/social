@@ -10,22 +10,21 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class StatusCreated implements ShouldBroadcast
+class CommentCreated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $status;
+    public $comment;
 
     /**
      * Create a new event instance.
      *
-     * @param $status
+     * @param $comment
      */
-    public function __construct($status)
+    public function __construct($comment)
     {
         $this->dontBroadcastToCurrentUser();
-
-        $this->status = $status;
+        $this->comment = $comment;
     }
 
     /**
@@ -35,6 +34,6 @@ class StatusCreated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('statuses');
+        return new Channel("statuses.{$this->comment->status_id}.comments");
     }
 }
