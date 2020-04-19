@@ -28,6 +28,8 @@ class CanLikeCommentsTest extends TestCase
     /** @test */
     public function an_authenticate_user_can_like_and_unlike_comments()
     {
+        \Notification::fake();
+
         $this->withoutExceptionHandling();
 
         $user = factory(User::class)->create();

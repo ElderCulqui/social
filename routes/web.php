@@ -16,6 +16,7 @@ Route::view('/','welcome');
 // Rotas de los estados
 
 Route::get('statuses', 'StatusesController@index')->name('statuses.index');
+Route::get('statuses/{status}', 'StatusesController@show')->name('statuses.show');
 Route::post('statuses','StatusesController@store')->name('statuses.store')->middleware('auth');
 
 // Rutas de los likes
@@ -44,5 +45,8 @@ Route::delete('friendships/{user}', 'FriendshipsController@destroy')->name('frie
 Route::get('accept-friendships', 'AcceptFriendshipsController@index')->name('accept-friendships.index')->middleware('auth');
 Route::post('accept-friendships/{sender}', 'AcceptFriendshipsController@store')->name('accept-friendships.store')->middleware('auth');
 Route::delete('accept-friendships/{sender}', 'AcceptFriendshipsController@destroy')->name('accept-friendships.destroy')->middleware('auth');
+
+//Notifications Routes
+Route::get('notifications','NotificationsController@index')->name('notifications.index')->middleware('auth');
 
 Route::auth();
