@@ -15,6 +15,7 @@ use App\User;
 use App\Models\Like;
 use App\Traits\HasLikes;
 use App\Events\ModelLiked;
+use App\Events\ModelUnLiked;
 
 class HasLikesTest extends TestCase
 {
@@ -27,6 +28,8 @@ class HasLikesTest extends TestCase
         Schema::create('model_with_likes', function ($table) {
             $table->increments('id');
         });
+
+        Event::fake([ModelLiked::class,ModelUnLiked::class]);
     }
 
     /** @test */
@@ -108,7 +111,7 @@ class HasLikesTest extends TestCase
     /** @test */
     public function an_event_is_fired_when_a_model_is_liked()
     {
-        Event::fake([ModelLiked::class]);
+        
         Broadcast::shouldReceive('socket')->andReturn('socket-id');
 
         $this->actingAs(factory(User::class)->create());
@@ -118,6 +121,33 @@ class HasLikesTest extends TestCase
         $model->like();
 
         Event::assertDispatched(ModelLiked::class, function($event) {
+            $this->assertInstanceOf(ModelWithLike::class, $event->model);
+            $this->assertEventChannelType('public', $event);
+            $this->assertEventChannelName($event->model->eventChannelName(), $event);
+            $this->assertDontBroadcastToCurrentUser($event);
+
+            
+            return true;
+        }); 
+    }
+
+    /** @test */
+    public function an_event_is_fired_when_a_model_is_unliked()
+    {
+        
+        Broadcast::shouldReceive('socket')->andReturn('socket-id');
+
+        $this->actingAs(factory(User::class)->create());
+
+        $model = ModelWithLike::create();
+
+        $model->likes()->firstOrCreate([
+            'user_id' => auth()->id()
+        ]);
+
+        $model->unlike();
+
+        Event::assertDispatched(ModelUnLiked::class, function($event) {
             $this->assertInstanceOf(ModelWithLike::class, $event->model);
             $this->assertEventChannelType('public', $event);
             $this->assertEventChannelName($event->model->eventChannelName(), $event);
