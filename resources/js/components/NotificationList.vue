@@ -11,20 +11,20 @@
             <slot></slot>    
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownNotifications">
-            <div v-if="notifications.length > 0">
-                <a v-for="notification of notifications"
-                   :key="notification.id"
-                   :dusk="notification.id"
-                   :href="notification.data.link"
-                   class="dropdown-item"
-                > {{ notification.data.message }} </a>
-            </div>
+            <notification-list-item
+                v-for="notification of notifications"
+                :notification="notification"
+                :key="notification.id"
+            ></notification-list-item>
         </div>
     </li>
 </template>
 
 <script>
+    import NotificationListItem from './NotificationListItem'
+
     export default {
+        components: { NotificationListItem },
         data() {
             return {
                 notifications: []
