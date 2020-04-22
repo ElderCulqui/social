@@ -13,7 +13,12 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label for="">Email:</label>
-                            <input class="form-control border-0" type="email" name="email" placeholder="Tu correo...">
+                            <input class="form-control border-0" 
+                                   type="email" 
+                                   name="email" 
+                                   placeholder="Tu correo..."
+                                   value="{{ old('email') }}"
+                            >
                         </div>
                         <div class="form-group">
                             <label for="">Contraseña:</label>

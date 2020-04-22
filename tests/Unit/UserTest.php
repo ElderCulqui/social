@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 use App\Models\Status;
+use App\Models\Friendship;
 use App\User;
 
 class UserTest extends TestCase
@@ -52,5 +53,83 @@ class UserTest extends TestCase
         factory(Status::class)->create(['user_id' => $user->id]);
 
         $this->assertInstanceOf(Status::class, $user->statuses->first());
+    }
+
+    /** @test */
+    public function a_user_can_send_friend_requests()
+    {
+        $sender = factory(User::class)->create();
+        $recipient = factory(User::class)->create();
+
+        $friendship = $sender->sendFriendRequestTo($recipient);
+
+        $this->assertTrue($friendship->sender->is($sender));
+        $this->assertTrue($friendship->recipient->is($recipient));
+
+    }
+
+    /** @test */
+    public function a_user_can_accept_friend_requests()
+    {
+        $sender = factory(User::class)->create();
+        $recipient = factory(User::class)->create();
+
+        $sender->sendFriendRequestTo($recipient);
+
+        $friendship =  $recipient->acceptFriendshipRequestFrom($sender);
+
+        $this->assertEquals('accepted',$friendship->status);
+
+    }
+
+    /** @test */
+    public function a_user_can_deny_friend_requests()
+    {
+        $sender = factory(User::class)->create();
+        $recipient = factory(User::class)->create();
+
+        $sender->sendFriendRequestTo($recipient);
+
+        $friendship =  $recipient->denyFriendshipRequestFrom($sender);
+
+        $this->assertEquals('denied',$friendship->status);
+
+    }
+
+    /** @test */
+    public function a_users_can_get_all_their_friend_requests()
+    {
+        $sender = factory(User::class)->create();
+        $recipient = factory(User::class)->create();
+
+        $sender->sendFriendRequestTo($recipient);
+
+        $this->assertCount(0, $recipient->friendshipRequestsSent);
+        $this->assertCount(1, $recipient->friendshipRequestsReceived);
+        $this->assertInstanceOf(Friendship::class, $recipient->friendshipRequestsReceived->first());
+
+        $this->assertCount(1, $sender->friendshipRequestsSent);
+        $this->assertCount(0, $sender->friendshipRequestsReceived);
+        $this->assertInstanceOf(Friendship::class, $sender->friendshipRequestsSent->first());
+    }
+
+    /** @test */
+    public function a_users_can_get_their_friends()
+    {
+        $sender = factory(User::class)->create();
+        $recipient = factory(User::class)->create();
+
+        $sender->sendFriendRequestTo($recipient);
+
+        $this->assertCount(0, $recipient->friends());
+        $this->assertCount(0, $sender->friends());
+
+        $recipient->acceptFriendshipRequestFrom($sender);
+
+        $this->assertCount(1, $recipient->friends());
+        $this->assertCount(1, $sender->friends());
+
+        $this->assertEquals($recipient->name, $sender->friends()->first()->name);
+        $this->assertEquals($sender->name, $recipient->friends()->first()->name);
     }
 }

@@ -71,10 +71,10 @@ class UsersCanGetTheirNotificationsTest extends DuskTestCase
             $browser2->loginAs($user2)
                     ->visit('/')
                     ->press('@like-btn')
-                    ->pause(1000)
+                    ->pause(2000)
                     ;
             
-            $browser1->assertSee('@notifications-count', 1);
+            $browser1->waitFor('@notifications-count')->assertSeeIn('@notifications-count', 1);
         });
     }
 
@@ -99,10 +99,13 @@ class UsersCanGetTheirNotificationsTest extends DuskTestCase
                     ->visit('/')
                     ->type('comment','Mi primer comentario')
                     ->press('@comment-btn')
-                    ->pause(1000)
+                    ->pause(2000)
                     ;
             
-            $browser1->assertSeeIn('@notifications-count', 1);
+            $browser1->waitFor('@notifications-count')
+                     ->pause(1000)
+                     ->assertSeeIn('@notifications-count', 1)
+                     ;
         });
     }
 }

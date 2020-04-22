@@ -48,6 +48,7 @@ class UsersCanRequestFriendshipTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($recipient) {
             $browser->visit(route('users.show', $recipient))
                     ->waitFor('@request-friendship')
+                    ->pause(2000)
                     ->press('@request-friendship')
                     ->assertPathIs('/login')
                     ;   
@@ -89,6 +90,7 @@ class UsersCanRequestFriendshipTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($sender, $recipient) {
             $browser->loginAs($sender)
                     ->visit(route('users.show', $recipient))
+                    ->waitForText('Eliminar de mis amigos')
                     ->assertSee('Eliminar de mis amigos')
                     ->press('@request-friendship')
                     ->waitForText('Solicitar amistad')
@@ -119,6 +121,7 @@ class UsersCanRequestFriendshipTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($sender, $recipient) {
             $browser->loginAs($sender)
                     ->visit(route('users.show', $recipient))
+                    ->waitForText('Solicitud denegada')
                     ->assertSee('Solicitud denegada')
                     ->press('@request-friendship')
                     ->waitForText('Solicitud denegada')

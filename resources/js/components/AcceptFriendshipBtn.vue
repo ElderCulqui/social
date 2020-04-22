@@ -1,18 +1,25 @@
 <template>
-    <div>
-        <div v-if="localfriendshipStatus === 'pending'">
-            <span v-text="sender.name"></span> te ha enviado una solicitud de amistad
-            <button @click="acceptFriendshipRequest">Aceptar solicitud</button>
-            <button dusk="deny-friendship" @click="denyFriendshipRequest">Denegar solicitud</button>
+    <div class="d-flex justify-content-between bg-light p-3 rounded mb-3 shadow-sm">
+        <div>
+            <div v-if="localfriendshipStatus === 'pending'">
+                <span v-text="sender.name"></span> te ha enviado una solicitud de amistad
+            </div>
+            <div v-if="localfriendshipStatus === 'accepted'">
+                Tú y <span v-text="sender.name"></span> son amigos 
+            </div>
+            <div v-if="localfriendshipStatus === 'denied'">
+                Solicitud denegada de <span v-text="sender.name"></span>
+            </div>
+            <div v-if="localfriendshipStatus === 'deleted'">
+                Solicitud eliminada de <span v-text="sender.name"></span>
+            </div>
         </div>
-        <div v-else-if="localfriendshipStatus === 'accepted'">
-        Tú y <span v-text="sender.name"></span> son amigos 
+        <div>
+            <button class="btn btn-small btn-primary" v-if="localfriendshipStatus === 'pending'" dusk="accept-friendship" @click="acceptFriendshipRequest">Aceptar solicitud</button>
+            <button class="btn btn-small btn-warning" v-if="localfriendshipStatus === 'pending'" dusk="deny-friendship" @click="denyFriendshipRequest">Denegar solicitud</button>
+            <button class="btn btn-small btn-danger" v-if="localfriendshipStatus !== 'deleted'" dusk="delete-friendship" @click="deleteFriendship">Eliminar</button>
+
         </div>
-        <div v-else-if="localfriendshipStatus === 'denied'">
-        Solicitud denegada de <span v-text="sender.name"></span>
-        </div>
-        <div v-if="localfriendshipStatus === 'deleted'">Solicitud eliminada</div>
-        <button v-else dusk="delete-friendship" @click="deleteFriendship">Eliminar</button>
     </div>
 </template>
 

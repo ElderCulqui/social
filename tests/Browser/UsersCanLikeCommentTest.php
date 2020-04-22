@@ -71,8 +71,8 @@ class UsersCanLikeCommentTest extends DuskTestCase
                      ->waitForText('ME GUSTA')
             ;
 
-            $browser1->pause(1000)
-                     ->waitFor('@comment-likes-count')
+            $browser1->waitFor('@comment-likes-count')
+                     ->pause(2000)
                      ->assertSeeIn('@comment-likes-count', 0);
         });
     }
